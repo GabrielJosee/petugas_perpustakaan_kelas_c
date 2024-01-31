@@ -7,7 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:petugas_perpustakaan_kelas_c/app/data/constant/endpoin.dart';
 import 'package:petugas_perpustakaan_kelas_c/app/data/provider/api_provider.dart';
 import 'package:petugas_perpustakaan_kelas_c/app/data/provider/storage_provider.dart';
-import 'package:dio/dio.dart' as dio;
+import 'package:petugas_perpustakaan_kelas_c/app/modules/book/controllers/book_controller.dart';
+
 
 import '../../../routes/app_pages.dart';
 
@@ -18,8 +19,9 @@ class AddBookController extends GetxController {
   final TextEditingController penerbitController = TextEditingController();
   final TextEditingController tahunterbitController = TextEditingController();
   final loading = false.obs;
-
   final count = 0.obs;
+  final BookController _bookController = Get.find(); //untuk reload get data book
+
   @override
   void onInit() {
     super.onInit();
@@ -48,8 +50,8 @@ class AddBookController extends GetxController {
                   "tahun_terbit": int.parse(tahunterbitController.text.toString()),
                 });
         if (response.statusCode == 201) {
-          await StorageProvider.write(StorageKey.status, "success");
-          Get.offAllNamed(Routes.BOOK);
+          _bookController.getData();
+          Get.back();
         } else {
           Get.snackbar("Sorry", "Input Gagal", backgroundColor: Colors.orange);
         }
